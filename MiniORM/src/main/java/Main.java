@@ -1,3 +1,4 @@
+import entities.Account;
 import entities.User;
 import orm.Connector;
 import orm.EntityManager;
@@ -13,13 +14,22 @@ public class Main {
         Connector.createConnection("root", "810129", "soft_uni");
         Connection connection = Connector.getConnection();
         EntityManager<User> userManager = new EntityManager<>(connection);
-        User user = new User("First", 28, LocalDate.now());
+        User user = new User();
+        user.setId(1);
+        userManager.doDelete(user);
+//        User user = new User("First", 28, LocalDate.now());
+//
+//        userManager.persist(user);
+//      User first =  userManager.findFirst(User.class);
+//        System.out.println(first.getId() + " " + first.getUsername());
+//
+//        userManager.find(User.class,"age > 18 AND registration_date > '2022-06-06'")
+//                .forEach(u-> System.out.println(u.toString()));
 
-        userManager.persist(user);
-      User first =  userManager.findFirst(User.class);
-        System.out.println(first.getId() + " " + first.getUsername());
+//        EntityManager<Account> entityManager = new EntityManager<>(connection);
+//        //Account account = new Account("Pesho", LocalDate.now(),111);
+//        entityManager.doCreate(Account.class);
+//        entityManager.doAlter(Account.class);
 
-        userManager.find(User.class,"age > 18 AND registration_date > '2022-06-06'")
-                .forEach(u-> System.out.println(u.toString()));
     }
 }
