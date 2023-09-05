@@ -6,15 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author,Long> {
 
 
-    @Query("select a from  Author a order by a.books.size")
-    List<Author> findAllDistinctOrderByBooksSize();
+//    @Query("select a from  Author a order by size(a.books)")
+//    List<Author> findAllDistinctOrderByBooksSize();
 
-    List<Author>getAllDistinct();
+ //   List<Author>getAllDistinct();
+
+
+    List<Author> findAllByFirstNameEndingWith(String suffix);
 }
 

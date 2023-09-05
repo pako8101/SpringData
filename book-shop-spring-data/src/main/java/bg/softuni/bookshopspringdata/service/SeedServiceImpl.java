@@ -53,7 +53,7 @@ public class SeedServiceImpl implements SeedService {
     public void seedBooks() throws IOException {
 
         if (this.bookService.isDataSeeded()) return;
-        System.out.println();
+
 
 
      final List<Book> bookStream = Files.readAllLines(Path.of(RESOURCE_URL + BOOK_FILE_NAME))
@@ -67,7 +67,7 @@ public class SeedServiceImpl implements SeedService {
 
                     final String title = Arrays.stream(args)
                             .skip(5)
-                            .collect(Collectors.joining());
+                            .collect(Collectors.joining(" "));
 
                     final EditionType edition = EditionType.values()[Integer.parseInt(args[3])];
                     final AgeRestriction restriction = AgeRestriction.values()[Integer.parseInt(args[4])];

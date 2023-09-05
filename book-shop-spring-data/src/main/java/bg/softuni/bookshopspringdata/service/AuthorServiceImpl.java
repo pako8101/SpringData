@@ -19,6 +19,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     private final BookService bookService;
+
     @Autowired
     public AuthorServiceImpl(AuthorRepository authorRepository, BookService bookService) {
         this.authorRepository = authorRepository;
@@ -60,19 +61,34 @@ public class AuthorServiceImpl implements AuthorService {
                 .collect(Collectors.joining("\n")));
         return authors;
     }
+
     @Override
     @Transactional
     public List<Author> getAllAuthorsOrderedByBooksDesc() {
-
-        final List<Author> authors = this.authorRepository
-                .findAllDistinctOrderByBooksSize();
-//                .orElseThrow(NoSuchElementException::new);
-
-
-        System.out.println(authors.stream().map(Author::getAuthorFullNameAndCountOfBooks)
-                .collect(Collectors.joining("\n")));
-        return authors;
-
+//
+////        final List<Author> authors = this.authorRepository
+////                .findAllDistinctOrderByBooksSize();
+////                .orElseThrow(NoSuchElementException::new);
+//
+//
+////        System.out.println(authors.stream()
+////                .map(Author::getAuthorFullNameAndCountOfBooks)
+////                .collect(Collectors.joining("\n")));
+////        return authors;
+//
+//    }
+        return null;
     }
+
+    @Override
+    public List<Author> getAllByFirstNameEndingWith(String suffix) {
+
+        final List<Author> allByFirstNameEndingWith = this.authorRepository.findAllByFirstNameEndingWith(suffix);
+
+        allByFirstNameEndingWith.forEach(a-> System.out.println(a.getAuthorFullName()));
+
+        return allByFirstNameEndingWith;
+    }
+
 }
 
