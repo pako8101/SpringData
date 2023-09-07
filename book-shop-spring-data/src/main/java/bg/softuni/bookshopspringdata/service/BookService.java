@@ -1,10 +1,12 @@
 package bg.softuni.bookshopspringdata.service;
 
 import bg.softuni.bookshopspringdata.domain.entities.Book;
+import bg.softuni.bookshopspringdata.domain.model.BookPrintInformation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookService {
 
@@ -27,6 +29,14 @@ public interface BookService {
     List<Book> getAllNotReleasedInYear(Integer year);
 
     List<Book> getAllByTitleContaining(String contains);
+    List<Book> getAllByAuthorLastNameStartingWith(String prefix);
+   Integer getAllByTitleGreaterThan(Integer length);
 
+   List <BookPrintInformation> getAllByTitle(String length);
+
+void increaseCopiesBookReleasedAfter(Integer addedCopies,LocalDate dateAfter);
+    int deleteAllByCopiesLessThan(Integer copies);
+
+    int getBooksCountByAuthorFirstNameAndAuthorLastName(String fullName);
 
 }

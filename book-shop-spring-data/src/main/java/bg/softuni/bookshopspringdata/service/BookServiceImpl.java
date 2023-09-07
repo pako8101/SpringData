@@ -3,6 +3,7 @@ package bg.softuni.bookshopspringdata.service;
 import bg.softuni.bookshopspringdata.domain.entities.Book;
 import bg.softuni.bookshopspringdata.domain.enums.AgeRestriction;
 import bg.softuni.bookshopspringdata.domain.enums.EditionType;
+import bg.softuni.bookshopspringdata.domain.model.BookPrintInformation;
 import bg.softuni.bookshopspringdata.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,25 +41,27 @@ public class BookServiceImpl implements BookService {
     public List<Book> getAllBooksAfterYear(LocalDate localdate) {
         final List<Book> allByReleaseDateAfter =
                 this.bookRepository.findAllByReleaseDateAfter(localdate).get();
-        System.out.println( allByReleaseDateAfter.stream()
+        System.out.println(allByReleaseDateAfter.stream()
                 .map(Book::getTitle)
                 .collect(Collectors.joining("\n")));
         return allByReleaseDateAfter;
     }
+
     @Override
     public List<Book> getAllBooksBeforeYear(LocalDate localdate) {
 
         final List<Book> books = this.bookRepository.findAllByReleaseDateBefore(localdate)
                 .orElseThrow(NoSuchElementException::new);
-        books.forEach(b-> System.out.println(b.getBookTitleEditionTypeAndPrice()));
+        books.forEach(b -> System.out.println(b.getBookTitleEditionTypeAndPrice()));
         return books;
 
 
     }
+
     @Override
-    public  List<Book> findAllByAuthorFirstNameAndAuthorLastNameOrderByReleaseDateDescTitleAsc(String firstName, String lastname){
+    public List<Book> findAllByAuthorFirstNameAndAuthorLastNameOrderByReleaseDateDescTitleAsc(String firstName, String lastname) {
         final List<Book> allBooksByAuthor = bookRepository
-                .findAllByAuthorFirstNameAndAuthorLastNameOrderByReleaseDateDescTitleAsc(firstName,lastname);
+                .findAllByAuthorFirstNameAndAuthorLastNameOrderByReleaseDateDescTitleAsc(firstName, lastname);
         allBooksByAuthor.stream()
                 .map(Book::getBookTitleReleaseDateCopiesFormat)
                 .forEach(System.out::println);
@@ -84,7 +88,7 @@ public class BookServiceImpl implements BookService {
                 .findAllByEditionTypeAndCopiesLessThan(EditionType.valueOf(editionType.toUpperCase()),
                         copiesToCompare);
 
-        books.forEach(b-> System.out.println(b.getTitle()));
+        books.forEach(b -> System.out.println(b.getTitle()));
         return books;
     }
 
@@ -94,13 +98,13 @@ public class BookServiceImpl implements BookService {
         final List<Book> books =
                 this.bookRepository.findAllByPriceLessThanOrPriceGreaterThan(lowBound, upperBound);
 
-books.forEach(b-> System.out.println(b.getFormattedBookPriceAndTitle()));
+        books.forEach(b -> System.out.println(b.getFormattedBookPriceAndTitle()));
         return books;
     }
 
     @Override
     public List<Book> getAllNotReleasedInYear(Integer year) {
-       // this.bookRepository.findAllByReleaseDate_Year(LocalDate.now());
+        // this.bookRepository.findAllByReleaseDate_Year(LocalDate.now());
 
         return null;
     }
@@ -111,10 +115,64 @@ books.forEach(b-> System.out.println(b.getFormattedBookPriceAndTitle()));
         final List<Book> allByTitleContaining = this.bookRepository
                 .findAllByTitleContaining(contains);
 
-        allByTitleContaining.forEach(b-> System.out.println(b.getTitle()));
+        allByTitleContaining.forEach(b -> System.out.println(b.getTitle()));
 
         return allByTitleContaining;
     }
 
+    @Override
+    public List<Book> getAllByAuthorLastNameStartingWith(String prefix) {
+        final List<Book> books = this.bookRepository.findAllByAuthorLastNameStartingWith(prefix);
+
+        books.forEach(b -> System.out.println(b.getTitle()));
+
+        return books;
+    }
+
+    @Override
+    public Integer getAllByTitleGreaterThan(Integer length) {
+        final Integer count = this.bookRepository.findAllByTitleGreaterThan(length);
+
+        System.out.println(count);
+        return count;
+    }
+
+    @Override
+    public List<BookPrintInformation> getAllByTitle(String title) {
+
+        final List<BookPrintInformation> allByTitle = this.bookRepository.findAllByTitle(title);
+
+        allByTitle.forEach(System.out::println);
+        return allByTitle;
+    }
+
+    @Override
+    public void increaseCopiesBookReleasedAfter(Integer addedCopies, LocalDate dateAfter) {
+        final List<Book> books = this.bookRepository.findAllByReleaseDateAfter(dateAfter).get();
+        books.forEach(b -> b.setCopies(b.getCopies() + addedCopies));
+
+        this.bookRepository.saveAllAndFlush(books);
+
+        System.out.println(books.stream().mapToInt(Book::getCopies).sum());
+
+//        for (Book book : books) {
+//            book.setCopies(book.getCopies() + addedCopies);
+//
+//            this.bookRepository.saveAndFlush(book);
+    }
+
+    @Override
+    public int deleteAllByCopiesLessThan(Integer copies) {
+        return this.bookRepository.deleteAllByCopiesLessThan(copies);
+    }
+
+    @Override
+    public int getBooksCountByAuthorFirstNameAndAuthorLastName(String fullName) {
+        return this.bookRepository
+                .getBooksCountByAuthorFirstNameAndAuthorLastName(fullName);
+    }
+
 
 }
+
+

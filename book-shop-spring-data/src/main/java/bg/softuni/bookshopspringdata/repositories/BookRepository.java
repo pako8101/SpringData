@@ -3,8 +3,12 @@ package bg.softuni.bookshopspringdata.repositories;
 import bg.softuni.bookshopspringdata.domain.entities.Book;
 import bg.softuni.bookshopspringdata.domain.enums.AgeRestriction;
 import bg.softuni.bookshopspringdata.domain.enums.EditionType;
+import bg.softuni.bookshopspringdata.domain.model.BookPrintInformation;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -17,6 +21,7 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<List<Book>> findAllByReleaseDateAfter(LocalDate date);
+
     Optional<List<Book>> findAllByReleaseDateBefore(LocalDate date);
 
     List<Book> findAllByAuthorFirstNameAndAuthorLastNameOrderByReleaseDateDescTitleAsc(String firstName, String lastname);
@@ -30,11 +35,28 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findAllByTitleContaining(String contains);
 
-//   @Query("select b from Book b where b.releaseDate != :year")
-//    List<Book> findAllByReleaseDate_Year(LocalDate year);
+    List<Book> findAllByAuthorLastNameStartingWith(String prefix);
+
+    @Query("select count(b) from  Book  b where length(b.title)> :length")
+    Integer findAllByTitleGreaterThan(Integer length);
+
+    @Query("select new bg.softuni.bookshopspringdata.domain.model" +
+            ".BookPrintInformation(b.title,b.editionType,b.ageRestriction,b.price) from  Book b  where b.title = :title")
+    List<BookPrintInformation> findAllByTitle(String title);
 
 
+    @Query(value = "select * from book_shop_system.books b where year (b.release_date)  != 2000", nativeQuery = true)
+    List<Book> findAllByReleaseDateYearNot(Integer year);
 
+    @Modifying
+    @Transactional
+    @Query("update Book  b set b.copies = b.copies + :copiesAdded where b.releaseDate > :date")
+    int updateBooksByCopies(Integer copiesAdded, LocalDate date);
 
+    @Transactional
+    int deleteAllByCopiesLessThan(Integer copies);
+
+    @Procedure(value = "usp_get_books_written_by")
+    int getBooksCountByAuthorFirstNameAndAuthorLastName(String fullName);
 
 }

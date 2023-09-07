@@ -53,8 +53,20 @@ public class ConsoleRunner implements CommandLineRunner {
 
        // authorService.getAllByFirstNameEndingWith("e");
 
-        bookService.getAllByTitleContaining("e");
+       // bookService.getAllByTitleContaining("e");
+//this.bookService.getAllByAuthorLastNameStartingWith("Rio");
 
+        //this.bookService.getAllByTitleGreaterThan(12);
+
+       // this.bookService.getAllByTitle("Things Fall Apart");
+
+       // this.bookService
+            //    .increaseCopiesBookReleasedAfter(100,LocalDate.of(2005,10, 12));
+
+        //this.bookService.deleteAllByCopiesLessThan(10000);
+
+        System.out.println(this.bookService
+                .getBooksCountByAuthorFirstNameAndAuthorLastName("Amanda Rice"));
 
     }
 }
