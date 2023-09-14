@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static bg.softuni.gamestoremappingexercise.constants.ErrorMessages.EMAIL_ALREADY_EXIST;
+import static bg.softuni.gamestoremappingexercise.constants.Commands.*;
+import static bg.softuni.gamestoremappingexercise.constants.ErrorMessages.*;
 
 @Service
 
@@ -60,6 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String LOGGINUser(String[] args) {
+        if (this.loggedInUser!= null) return "User is already logged";
+
         final int argsLength = args.length;
 
         final String email = argsLength > 1 ? args[1] : "";
@@ -85,4 +88,18 @@ public class UserServiceImpl implements UserService {
         return userLoginDto.successfullyLogged();
     }
 
+    @Override
+    public String LOGGOutUser() {
+        if (this.loggedInUser == null) return "No user logged";
+
+        this.loggedInUser = null;
+
+        return LOGOUT_USER;
+
+    }
+
+    @Override
+    public boolean isLoggedUserAdmin(){
+        return this.loggedInUser != null && this.loggedInUser.isAdmin();
+    }
 }
