@@ -50,13 +50,20 @@ List<String> errors =  bindingResult
 
         return modelAndView;
     }
+
     @GetMapping("/register")
     public String register(){
         return "/user/register";
     }
+
     @PostMapping("/register")
     public String doRegister(@Valid UserRegisterDTO registerDTO){
-userService.register(registerDTO);
+
+boolean success = userService.register(registerDTO);
+
+if (success){
+    return "redirect:user/login";
+}
         return "/user/register";
     }
 
